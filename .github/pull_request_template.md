@@ -10,7 +10,7 @@ about your PR before proceeding.
 
 ### Type
 
-- [ ] Bug fix.
+- [ ] Fix issue <!-- provide the issue number in format #number like #123 -->
 - [ ] Add module.
 - [ ] Change existing module.
 - [ ] Other. Please describe bellow.
