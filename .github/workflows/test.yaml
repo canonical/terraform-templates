@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  pull_request:
+
+jobs:
+  check-terraform-files:
+    name: Check Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ secrets.TERRAFORM_VERSION }}
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check -recursive ./modules ./templates
+
+      - name: Terraform init
+        id: init
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        id: validate
+        if: success() || failure()
+        run: terraform validate
