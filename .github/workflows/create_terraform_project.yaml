@@ -90,4 +90,4 @@ jobs:
         id: templates_result
         run: |
           TEMPLATES_RESULT=$(cat ${{ inputs.environment_stage }}/*.tf)
-          echo "templates_result=${TEMPLATES_RESULT}" >> $GITHUB_OUTPUT
+          echo "templates_result='${TEMPLATES_RESULT}'" >> $GITHUB_OUTPUT
