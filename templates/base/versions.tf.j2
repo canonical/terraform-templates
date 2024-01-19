@@ -1,0 +1,11 @@
+terraform {
+  required_version = ">= {{ service.minimum_tf_version }}"
+  required_providers {
+    {% for provider in service.providers %}
+    {{ provider }} = {
+      source  = "{{ service.providers[provider].source }}"
+      version = "{{ service.providers[provider].version }}"
+    }
+    {% endfor %}
+  }
+}

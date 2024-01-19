@@ -1,0 +1,11 @@
+terraform {
+  backend "s3" {
+    key                         = "environments/{{ service.owner }}/{{ service.name }}/state"
+    bucket                      = "{{ service.cloud }}-flux-tfstate"
+    region                      = "{{ service.region }}"
+    endpoint                    = "radosgw.{{ service.cloud }}.canonical.com"
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    force_path_style            = true
+  }
+}

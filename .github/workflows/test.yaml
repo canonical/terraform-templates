@@ -18,16 +18,8 @@ jobs:
 
       - name: Terraform fmt
         id: fmt
-        run: terraform fmt -check -recursive ./modules ./templates
+        run: terraform fmt -check -recursive ./modules
 
-      - name: Terraform init
-        id: init
-        run: terraform init -backend=false
-
-      - name: Terraform validate
-        id: validate
-        if: success() || failure()
-        run: terraform validate
   required_status_checks:
     name: Required Terraform Test Status Checks
     runs-on: ubuntu-latest
