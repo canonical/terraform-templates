@@ -46,32 +46,35 @@ on:
 
 
 jobs:
-  render_base_backend:
-    name: Setup base - backend.tf
-    uses: cuchi/jinja2-action@v1.2.2
-    with:
-      template: templates/base/backend.tf.j2
-      output_file: ${{ inputs.environment_stage }}/backend.tf
-      strict: true
-      variables: |
-        service_cloud=${{ inputs.service_cloud }}
-        service_name=${{ inputs.service_name }}
-        service_owner=${{ inputs.service_owner }}
-        service_region=${{ inputs.service_region }}
-  render_base_locals:
-    name: Setup base - locals.tf
-    uses: cuchi/jinja2-action@v1.2.2
-    with:
-      template: templates/base/locals.tf.j2
-      output_file: ${{ inputs.environment_stage }}/locals.tf
-      strict: true
-      variables: |
-        service_cloud=${{ inputs.service_cloud }}
-        service_name=${{ inputs.service_name }}
-  render_application:
-    name: Setup application
-    uses: cuchi/jinja2-action@v1.2.2
-    with:
-      template: templates/${{ inputs.application_type }}/${{ inputs.application_name }}/main.tf.j2
-      output_file: ${{ inputs.environment_stage }}/main.tf
-      strict: true
+  render_templates:
+    name: Render templates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Setup backend.tf
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: templates/base/backend.tf.j2
+          output_file: ${{ inputs.environment_stage }}/backend.tf
+          strict: true
+          variables: |
+            service_cloud=${{ inputs.service_cloud }}
+            service_name=${{ inputs.service_name }}
+            service_owner=${{ inputs.service_owner }}
+            service_region=${{ inputs.service_region }}
+      - name: Setup locals.tf
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: templates/base/locals.tf.j2
+          output_file: ${{ inputs.environment_stage }}/locals.tf
+          strict: true
+          variables: |
+            service_cloud=${{ inputs.service_cloud }}
+            service_name=${{ inputs.service_name }}
+      - name: Setup application
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: templates/${{ inputs.application_type }}/${{ inputs.application_name }}/main.tf.j2
+          output_file: ${{ inputs.environment_stage }}/main.tf
+          strict: true
