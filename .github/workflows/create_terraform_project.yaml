@@ -49,8 +49,6 @@ jobs:
   render_templates:
     name: Render templates
     runs-on: ubuntu-latest
-    outputs:
-      templates_result: ${{ steps.templates_result.outputs.templates_result }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -86,8 +84,8 @@ jobs:
           template: templates/${{ inputs.application_type }}/${{ inputs.application_name }}/main.tf.j2
           output_file: ${{ inputs.environment_stage }}/main.tf
           strict: true
-      - name: Print templates result to output
-        id: templates_result
-        run: |
-          TEMPLATES_RESULT=$(cat ${{ inputs.environment_stage }}/*.tf)
-          echo "templates_result='${TEMPLATES_RESULT}'" >> $GITHUB_OUTPUT
+      - name: Archive template results
+        uses: actions/upload-artifact@v3
+        with:
+          name: template-results
+          path: ${{ inputs.environment_stage }}/*.tf
