@@ -1,0 +1,77 @@
+name: Create Terraform Project
+on:
+  workflow_dispatch:
+    inputs:
+      service_name:
+        description: 'Name of service (model name and repository name)'
+        required: true
+        type: string
+      service_owner:
+        description: 'Owner of service'
+        required: true
+        type: string
+      service_cloud:
+        description: 'Service Cloud'
+        default: 'ps6'
+        type: choice
+        options:
+          - 'ps5'
+          - 'ps6'
+      service_region:
+        description: 'Service Region'
+        default: 'ps6'
+        type: choice
+        options:
+          - 'ps5'
+          - 'ps6'
+      environment_stage:
+        description: 'Service stage'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'staging'
+          - 'production'
+      application_name:
+        description: 'Name of Application. E.g.: hello-kubecon'
+        required: true
+        type: string
+      application_type:
+        description: 'Application type'
+        default: 'k8s'
+        type: choice
+        options:
+          - 'k8s'
+          - 'machine'
+
+
+jobs:
+  render_base_backend:
+    name: Setup base - backend.tf
+    uses: cuchi/jinja2-action@v1.2.2
+    with:
+      template: templates/base/backend.tf.j2
+      output_file: ${{ inputs.environment_stage }}/backend.tf
+      strict: true
+      variables: |
+        service_cloud=${{ inputs.service_cloud }}
+        service_name=${{ inputs.service_name }}
+        service_owner=${{ inputs.service_owner }}
+        service_region=${{ inputs.service_region }}
+  render_base_locals:
+    name: Setup base - locals.tf
+    uses: cuchi/jinja2-action@v1.2.2
+    with:
+      template: templates/base/locals.tf.j2
+      output_file: ${{ inputs.environment_stage }}/locals.tf
+      strict: true
+      variables: |
+        service_cloud=${{ inputs.service_cloud }}
+        service_name=${{ inputs.service_name }}
+  render_application:
+    name: Setup application
+    uses: cuchi/jinja2-action@v1.2.2
+    with:
+      template: templates/${{ inputs.application_type }}/${{ inputs.application_name }}/main.tf.j2
+      output_file: ${{ inputs.environment_stage }}/main.tf
+      strict: true
