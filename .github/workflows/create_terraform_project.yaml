@@ -57,6 +57,9 @@ jobs:
       - name: Create working directory
         run: |
           mkdir ${{ inputs.environment_stage }}
+          touch ${{ inputs.environment_stage }}/backend.tf
+          touch ${{ inputs.environment_stage }}/locals.tf
+          touch ${{ inputs.environment_stage }}/main.tf
       - name: Setup backend.tf
         uses: cuchi/jinja2-action@v1.2.2
         with:
