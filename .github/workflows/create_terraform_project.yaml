@@ -104,7 +104,7 @@ jobs:
           git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
           git remote add service https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
 
-      - name: Add and commit changes
+      - name: Push changes
         run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           BRANCH="terraform-${{ inputs.service_name }}-${GIT_HASH}"
@@ -114,9 +114,7 @@ jobs:
           mv ../${{ inputs.environment_stage }} .
           git add .
           git commit -m "Add terraform code for ${{ inputs.service_name }}"
-
-      - name: Push changes to the new branch
-        run: git push service ${BRANCH?}
+          git push service ${BRANCH?}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
