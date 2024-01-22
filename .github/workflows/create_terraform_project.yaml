@@ -58,6 +58,7 @@ jobs:
           touch ${{ inputs.environment_stage }}/backend.tf
           touch ${{ inputs.environment_stage }}/locals.tf
           touch ${{ inputs.environment_stage }}/main.tf
+
       - name: Setup backend.tf
         uses: cuchi/jinja2-action@v1.2.2
         with:
@@ -69,6 +70,7 @@ jobs:
             service_name=${{ inputs.service_name }}
             service_owner=${{ inputs.service_owner }}
             service_region=${{ inputs.service_region }}
+
       - name: Setup locals.tf
         uses: cuchi/jinja2-action@v1.2.2
         with:
@@ -78,14 +80,47 @@ jobs:
           variables: |
             service_cloud=${{ inputs.service_cloud }}
             service_name=${{ inputs.service_name }}
+
       - name: Setup application
         uses: cuchi/jinja2-action@v1.2.2
         with:
           template: templates/${{ inputs.application_type }}/${{ inputs.application_name }}/main.tf.j2
           output_file: ${{ inputs.environment_stage }}/main.tf
           strict: true
-      - name: Archive template results
+
+      - name: [DEBUG - TO BE REMOVED] Archive template results
         uses: actions/upload-artifact@v3
         with:
           name: template-results
           path: ${{ inputs.environment_stage }}/*.tf
+
+      - name: Set identity
+        run: |
+          git config --global user.email "canonical-is-bot@canonical.com"
+          git config --global user.name "Canonical IS Bot"
+
+      - name: Clone the repository
+        run: |
+          git clone https://github.com/canonical/${{ inputs.service_name }}
+
+      - name: Add and commit changes
+        run: |
+          GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          BRANCH="terraform-${{ inputs.service_name }}-${GIT_HASH}"
+          echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
+          cd ${{ inputs.service_name }}
+          git checkout -b ${BRANCH?}
+          mv ../${{ inputs.environment_stage }} .
+          git add .
+          git commit -m "Add terraform code for ${{ inputs.service_name }}"
+
+      - name: Push changes to the new branch
+        run: git push origin ${BRANCH?}
+
+      - name: Create pull request
+        id: create_pull_request
+        run: |
+          PR_URL=$(gh pr create -B main -H "${BRANCH?}" --title "[AUTO] Add terraform code for ${{ inputs.service_name }}" --body 'Created by Github action')
+          echo "pr_url=${PR_URL}" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
