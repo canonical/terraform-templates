@@ -99,11 +99,13 @@ jobs:
           git config --global user.email "canonical-is-bot@canonical.com"
           git config --global user.name "Canonical IS Bot"
 
-      - name: Push changes
+      - name: Clone the repo and set remote
         run: |
           git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
-          git remote add service https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
-          git remote -v
+          git remote add service https://${{ github.actor }}:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
+
+      - name: Commit and push changes
+        run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           BRANCH="terraform-template-${{ inputs.service_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
