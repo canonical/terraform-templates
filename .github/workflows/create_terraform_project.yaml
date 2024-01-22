@@ -110,7 +110,7 @@ jobs:
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
           cd ${{ inputs.service_name }}
           git checkout -b ${BRANCH?}
-          mv ../${{ inputs.environment_stage }} .
+          cp -r ../${{ inputs.environment_stage }} .
           git add .
           git commit -m "Add terraform project template for ${{ inputs.service_name }}"
           git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}.git
