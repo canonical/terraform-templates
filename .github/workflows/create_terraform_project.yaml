@@ -114,6 +114,7 @@ jobs:
           mv ../${{ inputs.environment_stage }} .
           git add .
           git commit -m "Add terraform project template for ${{ inputs.service_name }}"
+          git remote -v
           git push service ${BRANCH?}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
