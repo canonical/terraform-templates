@@ -101,7 +101,7 @@ jobs:
 
       - name: Clone the repository
         run: |
-          git clone https://github.com/canonical/${{ inputs.service_name }}
+          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
 
       - name: Add and commit changes
         run: |
