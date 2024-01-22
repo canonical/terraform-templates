@@ -102,7 +102,6 @@ jobs:
       - name: Clone the repo and set remote
         run: |
           git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
-          git remote add service https://${{ github.actor }}:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}.git
 
       - name: Commit and push changes
         run: |
@@ -115,7 +114,7 @@ jobs:
           git add .
           git commit -m "Add terraform project template for ${{ inputs.service_name }}"
           git remote -v
-          git push service ${BRANCH?}
+          git push -v origin ${BRANCH?}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
