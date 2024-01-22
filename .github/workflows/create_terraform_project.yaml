@@ -113,6 +113,7 @@ jobs:
           mv ../${{ inputs.environment_stage }} .
           git add .
           git commit -m "Add terraform project template for ${{ inputs.service_name }}"
+          git remote set-url origin https://${ GITHUB_TOKEN }:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}.git
           git remote -v
           git push -v origin ${BRANCH?}
         env:
