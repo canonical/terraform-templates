@@ -99,21 +99,19 @@ jobs:
           git config --global user.email "canonical-is-bot@canonical.com"
           git config --global user.name "Canonical IS Bot"
 
-      - name: Clone the repository and set the origin
+      - name: Push changes
         run: |
           git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
           git remote add service https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
-
-      - name: Push changes
-        run: |
+          git remote -v
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
-          BRANCH="terraform-${{ inputs.service_name }}-${GIT_HASH}"
+          BRANCH="terraform-template-${{ inputs.service_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
           cd ${{ inputs.service_name }}
           git checkout -b ${BRANCH?}
           mv ../${{ inputs.environment_stage }} .
           git add .
-          git commit -m "Add terraform code for ${{ inputs.service_name }}"
+          git commit -m "Add terraform project template for ${{ inputs.service_name }}"
           git push service ${BRANCH?}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
@@ -121,7 +119,7 @@ jobs:
       - name: Create pull request
         id: create_pull_request
         run: |
-          PR_URL=$(gh pr create -B main -H "${BRANCH?}" --title "[AUTO] Add terraform code for ${{ inputs.service_name }}" --body 'Created by Github action')
+          PR_URL=$(gh pr create -B main -H "${BRANCH?}" --title "[AUTO] Add terraform project template for ${{ inputs.service_name }}" --body 'Created by Github action')
           echo "pr_url=${PR_URL}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
