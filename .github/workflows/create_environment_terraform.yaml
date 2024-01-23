@@ -95,7 +95,7 @@ jobs:
 
       - name: Clone the repo and set remote
         run: |
-          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.environment_service_name}}
+          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.env_name}}
 
       - name: Commit and push changes
         run: |
