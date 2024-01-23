@@ -1,4 +1,4 @@
 locals {
-  juju_model_name = "{{ service_name }}"
-  cloud_name      = "{{ service_cloud }}"
+  juju_model_name = "{{ env_service_name }}"
+  cloud_name      = "{{ env_service_cloud }}"
 }

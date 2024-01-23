@@ -1,30 +1,30 @@
-name: Create Terraform Project
+name: Create Environment Terraform
 on:
   workflow_dispatch:
     inputs:
-      environment_service_name:
-        description: 'Environment Service Name. E.g.: stg-events'
+      env_name:
+        description: 'Environment Name'
         required: true
         type: string
-      service_owner:
-        description: 'Owner of service'
+      env_owner:
+        description: 'Environment Owner'
         required: true
         type: string
-      service_cloud:
-        description: 'Service Cloud'
+      env_cloud:
+        description: 'Environment Cloud'
         default: 'ps6'
         type: choice
         options:
           - 'ps5'
           - 'ps6'
-      service_region:
-        description: 'Service Region'
+      env_region:
+        description: 'Environment Region'
         default: 'ps6'
         type: choice
         options:
           - 'ps5'
           - 'ps6'
-      application_name:
+      service_name:
         description: 'Service Name'
         required: true
         default: 'base'
@@ -33,8 +33,8 @@ on:
           - 'base'
           - 'hello-kubecon'
           - 'synapse'
-      application_type:
-        description: 'Application type'
+      service_type:
+        description: 'Service type'
         default: 'k8s'
         type: choice
         options:
@@ -43,11 +43,11 @@ on:
 
 env:
   WORKING_DIR: terraform
-  TEMPLATE_DIR: templates/${{ inputs.application_type }}
+  TEMPLATE_DIR: templates/${{ inputs.service_type }}
 
 jobs:
-  create_terraform_project:
-    name: Create Terraform Project
+  create_environment_terraform:
+    name: Create Environment Terraform
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -66,10 +66,10 @@ jobs:
           output_file: ${{ env.WORKING_DIR }}/backend.tf
           strict: true
           variables: |
-            service_cloud=${{ inputs.service_cloud }}
-            service_name=${{ inputs.service_name }}
-            service_owner=${{ inputs.service_owner }}
-            service_region=${{ inputs.service_region }}
+            env_cloud=${{ inputs.env_cloud }}
+            env_name=${{ inputs.env_name }}
+            env_owner=${{ inputs.env_owner }}
+            env_region=${{ inputs.env_region }}
 
       - name: Setup locals.tf
         uses: cuchi/jinja2-action@v1.2.2
@@ -78,13 +78,13 @@ jobs:
           output_file: ${{ env.WORKING_DIR }}/locals.tf
           strict: true
           variables: |
-            service_cloud=${{ inputs.service_cloud }}
-            service_name=${{ inputs.service_name }}
+            env_cloud=${{ inputs.env_cloud }}
+            env_name=${{ inputs.env_name }}
 
       - name: Setup application
         uses: cuchi/jinja2-action@v1.2.2
         with:
-          template: ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/main.tf.j2
+          template: ${{ env.TEMPLATE_DIR }}/${{ inputs.service_name }}/main.tf.j2
           output_file: ${{ env.WORKING_DIR }}/main.tf
           strict: true
 
@@ -95,19 +95,19 @@ jobs:
 
       - name: Clone the repo and set remote
         run: |
-          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}
+          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.environment_service_name}}
 
       - name: Commit and push changes
         run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
-          BRANCH="terraform-template-${{ inputs.service_name }}-${GIT_HASH}"
+          BRANCH="terraform-template-${{ inputs.env_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
-          cd ${{ inputs.service_name }}
+          cd ${{ inputs.env_name }}
           git checkout -b ${BRANCH?}
           cp -r ../${{ env.WORKING_DIR }} terraform
           git add .
-          git commit -m "Add terraform project template for ${{ inputs.service_name }}"
-          git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ inputs.service_name }}.git
+          git commit -m "Add terraform project template for ${{ inputs.env_name }}"
+          git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ inputs.env_name }}.git
           git remote -v
           git push -v origin ${BRANCH?}
         env:
@@ -116,7 +116,7 @@ jobs:
       - name: Create pull request
         id: create_pull_request
         run: |
-          PR_URL=$(gh pr create --repo ${{ vars.ORGANIZATION }}/${{ inputs.service_name }} -B main -H "${{ vars.ORGANIZATION }}:${BRANCH?}" --title "[AUTO] Add terraform project template for ${{ inputs.service_name }}" --body 'Created by Github action')
+          PR_URL=$(gh pr create --repo ${{ vars.ORGANIZATION }}/${{ inputs.env_name }} -B main -H "${{ vars.ORGANIZATION }}:${BRANCH?}" --title "[AUTO] Add terraform project template for ${{ inputs.env_name }}" --body 'Created by Github action')
           echo "pr_url=${PR_URL}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
