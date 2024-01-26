@@ -1,4 +1,4 @@
-name: Create Environment Terraform
+name: Create Application Terraform
 on:
   workflow_dispatch:
     inputs:
@@ -24,8 +24,8 @@ on:
         options:
           - 'ps5'
           - 'ps6'
-      service_name:
-        description: 'Service Name'
+      application_name:
+        description: 'Application Name'
         required: true
         default: 'base'
         type: choice
@@ -33,8 +33,8 @@ on:
           - 'base'
           - 'hello-kubecon'
           - 'synapse'
-      service_type:
-        description: 'Service type'
+      application_type:
+        description: 'Application type'
         default: 'k8s'
         type: choice
         options:
@@ -43,7 +43,7 @@ on:
 
 env:
   WORKING_DIR: terraform
-  TEMPLATE_DIR: templates/${{ inputs.service_type }}
+  TEMPLATE_DIR: templates/${{ inputs.application_type }}
 
 jobs:
   create_environment_terraform:
@@ -84,7 +84,7 @@ jobs:
       - name: Setup application
         uses: cuchi/jinja2-action@v1.2.2
         with:
-          template: ${{ env.TEMPLATE_DIR }}/${{ inputs.service_name }}/main.tf.j2
+          template: ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/main.tf.j2
           output_file: ${{ env.WORKING_DIR }}/main.tf
           strict: true
 
