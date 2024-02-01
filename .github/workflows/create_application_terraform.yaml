@@ -75,6 +75,7 @@ on:
 env:
   WORKING_DIR: terraform
   TEMPLATE_DIR: templates/${{ inputs.application_type }}
+  REPO_NAME: is-${{ inputs.env_name}}
 
 jobs:
   create_environment_terraform:
@@ -126,7 +127,7 @@ jobs:
 
       - name: Clone the repo and set remote
         run: |
-          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ inputs.env_name}}
+          git clone https://github.com/${{ vars.ORGANIZATION }}/${{ env.REPO_NAME }}
 
       - name: Commit and push changes
         run: |
@@ -138,7 +139,7 @@ jobs:
           cp -r ../${{ env.WORKING_DIR }} terraform
           git add .
           git commit -m "Add terraform project template for ${{ inputs.env_name }}"
-          git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ inputs.env_name }}.git
+          git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/${{ vars.ORGANIZATION }}/${{ env.REPO_NAME }}.git
           git remote -v
           git push -v origin ${BRANCH?}
         env:
@@ -147,7 +148,7 @@ jobs:
       - name: Create pull request
         id: create_pull_request
         run: |
-          PR_URL=$(gh pr create --repo ${{ vars.ORGANIZATION }}/${{ inputs.env_name }} -B main -H "${{ vars.ORGANIZATION }}:${BRANCH?}" --title "[AUTO] Add terraform project template for ${{ inputs.env_name }}" --body 'Created by Github action')
+          PR_URL=$(gh pr create --repo ${{ vars.ORGANIZATION }}/${{ env.REPO_NAME }} -B main -H "${{ vars.ORGANIZATION }}:${BRANCH?}" --title "[AUTO] Add terraform project template for ${{ inputs.env_name }}" --body 'Created by Github action')
           echo "pr_url=${PR_URL}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
