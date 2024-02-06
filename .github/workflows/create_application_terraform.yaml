@@ -63,7 +63,7 @@ on:
 
 env:
   WORKING_DIR: terraform
-  TEMPLATE_DIR: templates/${{ inputs.application_type }}
+  TEMPLATE_DIR: terraform-templates/templates/${{ inputs.application_type }}
   REPO_NAME: is-${{ inputs.env_name}}
 
 jobs:
@@ -73,8 +73,13 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          repository: terraform-templates
+          path: terraform-templates
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Create working directory and files
+        working-directory: terraform-templates
         run: |
           mkdir ${{ env.WORKING_DIR }}
           cd ${{ env.WORKING_DIR }}
@@ -121,11 +126,11 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Commit and push changes
+        working-directory: remote-repo
         run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           BRANCH="terraform-template-${{ inputs.env_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
-          cd remote-repo
           git checkout -b ${BRANCH?}
           cp -r ../${{ env.WORKING_DIR }} terraform
           git add .
