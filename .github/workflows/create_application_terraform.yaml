@@ -130,6 +130,7 @@ jobs:
         with:
           repository: canonical/${{env.REPO_NAME}}
           path: remote-repo
+          token: secrets.REPO_ACCESS_TOKEN
 
       - name: Commit and push changes
         run: |
