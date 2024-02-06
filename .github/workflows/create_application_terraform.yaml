@@ -79,7 +79,6 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Create working directory and files
-        working-directory: terraform-templates
         run: |
           mkdir ${{ env.WORKING_DIR }}
           cd ${{ env.WORKING_DIR }}
