@@ -62,7 +62,7 @@ on:
         value: ${{ jobs.create_environment_terraform.outputs.pr_url }}
 
 env:
-  WORKING_DIR: terraform
+  WORKING_DIR: terraform-templates/terraform
   TEMPLATE_DIR: terraform-templates/templates/${{ inputs.application_type }}
   REPO_NAME: is-${{ inputs.env_name}}
 
