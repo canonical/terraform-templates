@@ -127,7 +127,7 @@ jobs:
 
       - name: Clone the repo and set remote
         run: |
-          git clone https://github.com/canonical/${{ env.REPO_NAME }}
+          git clone git@github.com:canonical/${{env.REPO_NAME}}.git
 
       - name: Commit and push changes
         run: |
