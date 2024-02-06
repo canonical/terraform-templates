@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     key                         = "environments/{{ env_owner }}/{{ env_name }}/state"
     bucket                      = "{{ env_name }}-tfstate"
-    region                      = "{{ env_region }}"
+    region                      = "{{ env_cloud }}"
     endpoint                    = "radosgw.{{ env_cloud }}.canonical.com"
     skip_region_validation      = true
     skip_credentials_validation = true

@@ -17,13 +17,6 @@ on:
         options:
           - 'ps5'
           - 'ps6'
-      env_region:
-        description: 'Environment Region'
-        default: 'ps6'
-        type: choice
-        options:
-          - 'ps5'
-          - 'ps6'
       application_name:
         description: 'Application Name'
         required: true
@@ -52,10 +45,6 @@ on:
         type: string
       env_cloud:
         description: 'Environment Cloud (ps5 or ps6)'
-        default: 'ps6'
-        type: string
-      env_region:
-        description: 'Environment Region (ps5 or ps6)'
         default: 'ps6'
         type: string
       application_name:
@@ -101,7 +90,6 @@ jobs:
             env_cloud=${{ inputs.env_cloud }}
             env_name=${{ inputs.env_name }}
             env_owner=${{ inputs.env_owner }}
-            env_region=${{ inputs.env_region }}
 
       - name: Setup locals.tf
         uses: cuchi/jinja2-action@v1.2.2
