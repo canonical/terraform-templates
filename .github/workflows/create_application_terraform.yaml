@@ -125,23 +125,23 @@ jobs:
           git config --global user.email "canonical-is-bot@canonical.com"
           git config --global user.name "Canonical IS Bot"
 
-      - name: Clone the repo and set remote
-        run: |
-          git clone git@github.com:canonical/${{env.REPO_NAME}}.git
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Checkout env repo
+        uses: actions/checkout@v4
+        with:
+          repository: canonical/${{env.REPO_NAME}}
+          path: remote-repo
 
       - name: Commit and push changes
         run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           BRANCH="terraform-template-${{ inputs.env_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
-          cd ${{ inputs.env_name }}
+          cd remote-repo
           git checkout -b ${BRANCH?}
           cp -r ../${{ env.WORKING_DIR }} terraform
           git add .
           git commit -m "Add terraform project template for ${{ inputs.env_name }}"
-          git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/canonical/${{ env.REPO_NAME }}.git
+          # git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/canonical/${{ env.REPO_NAME }}.git
           git remote -v
           git push -v origin ${BRANCH?}
         env:
