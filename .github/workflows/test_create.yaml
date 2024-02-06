@@ -1,0 +1,46 @@
+name: 'Test Create Application'
+on:
+  workflow_dispatch:
+    inputs:
+      env_name:
+        description: 'Environment Name'
+        required: true
+        type: string
+      env_owner:
+        description: 'Environment Owner'
+        required: true
+        type: string
+      env_cloud:
+        description: 'Environment Cloud'
+        default: 'ps6'
+        type: choice
+        options:
+          - 'ps5'
+          - 'ps6'
+      application_name:
+        description: 'Application Name'
+        required: true
+        default: 'base'
+        type: choice
+        options:
+          - 'base'
+          - 'hello-kubecon'
+          - 'synapse'
+      application_type:
+        description: 'Application type'
+        default: 'k8s'
+        type: choice
+        options:
+          - 'k8s'
+          - 'machine'
+
+jobs:
+  create_application_terraform:
+    uses: canonical/terraform-templates/.github/workflows/create_application_terraform.yaml@main
+    secrets: inherit
+    with:
+      env_name: ${{ inputs.env_name }}
+      env_owner: ${{ inputs.env_owner }}
+      env_cloud: ${{ inputs.env_cloud }}
+      application_name: ${{ inputs.application_name }}
+      application_type: ${{ inputs.application_type }}
