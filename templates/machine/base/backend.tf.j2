@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     key                         = "environments/{{ env_owner }}/{{ env_name }}/application/state"
     bucket                      = "ps6-flux-tfstate"
-    region                      = "{{ env_cloud }}"
+    region                      = "prodstack6"
     endpoint                    = "radosgw.{{ env_cloud }}.canonical.com"
     skip_region_validation      = true
     skip_credentials_validation = true
