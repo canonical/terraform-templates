@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir ${{ env.WORKING_DIR }}
           cd ${{ env.WORKING_DIR }}
-          touch backend.tf locals.tf main.tf
+          touch backend.tf locals.tf main.tf versions.tf
 
       - name: Setup backend.tf
         uses: cuchi/jinja2-action@v1.2.2
@@ -100,6 +100,16 @@ jobs:
         with:
           template: ${{ env.TEMPLATE_DIR }}/base/locals.tf.j2
           output_file: ${{ env.WORKING_DIR }}/locals.tf
+          strict: true
+          variables: |
+            env_cloud=${{ inputs.env_cloud }}
+            env_name=${{ inputs.env_name }}
+
+      - name: Setup versions
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: ${{ env.TEMPLATE_DIR }}/base/versions.tf.j2
+          output_file: ${{ env.WORKING_DIR }}/versions.tf
           strict: true
           variables: |
             env_cloud=${{ inputs.env_cloud }}
