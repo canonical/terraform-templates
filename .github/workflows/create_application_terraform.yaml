@@ -27,7 +27,6 @@ on:
       application_name:
         description: 'Application Name'
         required: true
-        default: 'base'
         type: choice
         options:
           - 'base'
@@ -61,7 +60,6 @@ on:
       application_name:
         description: 'Application Name. E.g.: base, hello-kubecon'
         required: true
-        default: 'base'
         type: string
       application_type:
         description: 'Application type (k8s or machine)'
@@ -81,6 +79,8 @@ jobs:
   create_environment_terraform:
     name: Create Environment Terraform
     runs-on: ubuntu-latest
+    outputs:
+      pr_url: ${{ steps.create_pull_request.outputs.pr_url }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
