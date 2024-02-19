@@ -18,7 +18,7 @@
 {% elif env_cloud == "ps6" %}
 {%     set env_region = "prodstack6" %}
 {% endif %}
-{% endfilter %}provider "vault" {
+provider "vault" {
   address = "https://vault.admin.canonical.com:8200"
   auth_login {
     path = "auth/approle/login"
@@ -74,3 +74,4 @@ provider "juju" {
   username             = data.vault_generic_secret.juju-controller-credentials-{{ env_stage }}.data["username"]
   password             = data.vault_generic_secret.juju-controller-credentials-{{ env_stage }}.data["password"]
 }
+{% endfilter %}
