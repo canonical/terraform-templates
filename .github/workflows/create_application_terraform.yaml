@@ -171,7 +171,7 @@ jobs:
           BRANCH="terraform-template-${{ inputs.env_name }}-${GIT_HASH}"
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
           git checkout -b ${BRANCH?}
-          cp -r ../${{ env.WORKING_DIR }} terraform
+          cp -rT ../${{ env.WORKING_DIR }} terraform
           git add .
           git commit -m "Add terraform project template for ${{ inputs.env_name }}"
           # git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/canonical/${{ env.REPO_NAME }}.git
