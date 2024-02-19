@@ -17,10 +17,16 @@ on:
         options:
           - 'ps5'
           - 'ps6'
+      env_stage:
+        description: 'Environment Stage'
+        default: 'staging'
+        type: choice
+        options:
+          - 'staging'
+          - 'production'
       application_name:
         description: 'Application Name'
         required: true
-        default: 'base'
         type: choice
         options:
           - 'base'
@@ -47,10 +53,13 @@ on:
         description: 'Environment Cloud (ps5 or ps6)'
         default: 'ps6'
         type: string
+      env_stage:
+        description: 'Environment Stage'
+        default: 'staging'
+        type: string
       application_name:
         description: 'Application Name. E.g.: base, hello-kubecon'
         required: true
-        default: 'base'
         type: string
       application_type:
         description: 'Application type (k8s or machine)'
@@ -70,6 +79,8 @@ jobs:
   create_environment_terraform:
     name: Create Environment Terraform
     runs-on: ubuntu-latest
+    outputs:
+      pr_url: ${{ steps.create_pull_request.outputs.pr_url }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -82,7 +93,7 @@ jobs:
         run: |
           mkdir ${{ env.WORKING_DIR }}
           cd ${{ env.WORKING_DIR }}
-          touch backend.tf locals.tf main.tf versions.tf variables.tf
+          touch backend.tf locals.tf main.tf versions.tf variables.tf providers.tf
 
       - name: Setup backend.tf
         uses: cuchi/jinja2-action@v1.2.2
@@ -121,6 +132,17 @@ jobs:
           output_file: ${{ env.WORKING_DIR }}/variables.tf
           strict: true
           variables: |
+            env_name=${{ inputs.env_name }}
+
+      - name: Setup providers
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: ${{ env.TEMPLATE_DIR }}/base/providers.tf.j2
+          output_file: ${{ env.WORKING_DIR }}/providers.tf
+          strict: true
+          variables: |
+            env_stage=${{ inputs.env_stage }}
+            env_cloud=${{ inputs.env_cloud }}
             env_name=${{ inputs.env_name }}
 
       - name: Setup application
