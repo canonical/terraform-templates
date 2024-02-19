@@ -1,5 +1,5 @@
 module "synapse" {
-  source = "github.com/terraform-modules.git//modules/k8s/synapse"
+  source = "github.com/canonical/terraform-modules.git//modules/k8s/synapse"
 
   juju_model_name = local.juju_model_name
   cloud_name      = local.cloud_name
