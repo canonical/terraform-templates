@@ -1,5 +1,6 @@
-{% set env_region = "prodstack5" %}
-{% if env_cloud == "ps6" %}
+{% if env_cloud == "ps5" %}
+{%     set env_region = "prodstack5" %}
+{% elif env_cloud == "ps6" %}
 {%     set env_region = "prodstack6" %}
 {% endif %}
 terraform {
