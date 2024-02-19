@@ -1,3 +1,4 @@
+{% filter trim %}
 {% if env_cloud == "ps5" %}
 {%     set env_region = "prodstack5" %}
 {% elif env_cloud == "ps6" %}
@@ -14,3 +15,4 @@ terraform {
     force_path_style            = true
   }
 }
+{% endfilter %}
