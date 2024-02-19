@@ -1,0 +1,6 @@
+module "mysql" {
+  source = "github.com/canonical/terraform-modules.git//modules/k8s/mysql"
+
+  juju_model_name = local.juju_model_name
+  cloud_name      = local.cloud_name
+}
