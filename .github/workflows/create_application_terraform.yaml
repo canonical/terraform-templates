@@ -143,6 +143,7 @@ jobs:
           variables: |
             env_stage=${{ inputs.env_stage }}
             env_cloud=${{ inputs.env_cloud }}
+            env_name=${{ inputs.env_name }}
 
       - name: Setup application
         uses: cuchi/jinja2-action@v1.2.2

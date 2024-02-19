@@ -58,6 +58,14 @@ provider "ldap" {
   bind_password = data.vault_generic_secret.ldap-credentials.data["password"]
 }
 
+data "vault_generic_secret" "juju-credentials" {
+  path = "secret/{{ env_region }}/roles/{{ env_name }}/juju"
+}
+
+data "vault_generic_secret" "juju-controller-certificate" {
+  path = "secret/{{ env_region }}/juju/common/ca_certs/prodstack-is"
+}
+
 provider "juju" {
   # These addresses refer to the {{ env_cloud }} controller for {{ env_stage }} environments
   controller_addresses = "{{ controller_addresses }}"
