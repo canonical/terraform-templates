@@ -1,9 +1,10 @@
+{% filter trim %}
 {% if env_cloud == "ps5" %}
 {%     set env_region = "prodstack5" %}
 {% elif env_cloud == "ps6" %}
 {%     set env_region = "prodstack6" %}
 {% endif %}
-terraform {
+{% endfilter %}terraform {
   backend "s3" {
     key                         = "environments/{{ env_owner }}/{{ env_name }}/application/state"
     bucket                      = "{{ env_cloud }}-flux-tfstate"
