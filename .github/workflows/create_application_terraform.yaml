@@ -113,7 +113,6 @@ jobs:
           output_file: ${{ env.WORKING_DIR }}/locals.tf
           strict: true
           variables: |
-            env_cloud=${{ inputs.env_cloud }}
             env_name=${{ inputs.env_name }}
 
       - name: Setup versions
