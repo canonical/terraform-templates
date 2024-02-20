@@ -30,35 +30,6 @@ provider "vault" {
   }
 }
 
-data "vault_generic_secret" "{{ env_region }}-credentials" {
-  path = "secret/{{ env_region }}/admin/openstack-credentials"
-}
-
-data "vault_generic_secret" "ldap-credentials" {
-  path = "secret/ldap/is-terraform"
-}
-
-data "vault_generic_secret" "juju-controller-credentials-{{ env_stage }}" {
-  path = "secret/{{ env_region }}/admin/juju-controller/{{ env_stage }}"
-}
-
-provider "openstack" {
-  user_name           = data.vault_generic_secret.{{ env_region }}-credentials.data["username"]
-  password            = data.vault_generic_secret.{{ env_region }}-credentials.data["password"]
-  tenant_name         = "admin"
-  auth_url            = "https://keystone.{{ env_cloud }}.canonical.com:5000/v3"
-  project_domain_name = "admin_domain"
-  user_domain_name    = "admin_domain"
-}
-
-provider "ldap" {
-  ldap_host     = "erinyes.canonical.com"
-  ldap_port     = 636
-  tls           = true
-  bind_user     = data.vault_generic_secret.ldap-credentials.data["user_dn"]
-  bind_password = data.vault_generic_secret.ldap-credentials.data["password"]
-}
-
 data "vault_generic_secret" "juju-credentials" {
   path = "secret/{{ env_region }}/roles/{{ env_name }}/juju"
 }
@@ -70,8 +41,8 @@ data "vault_generic_secret" "juju-controller-certificate" {
 provider "juju" {
   # These addresses refer to the {{ env_cloud }} controller for {{ env_stage }} environments
   controller_addresses = "{{ controller_addresses }}"
-  ca_certificate       = data.vault_generic_secret.juju-controller-credentials-{{ env_stage }}.data["ca_cert"]
-  username             = data.vault_generic_secret.juju-controller-credentials-{{ env_stage }}.data["username"]
-  password             = data.vault_generic_secret.juju-controller-credentials-{{ env_stage }}.data["password"]
+  ca_certificate       = data.vault_generic_secret.juju-controller-certificate.data["ca_cert"]
+  username             = data.vault_generic_secret.juju-credentials.data["username"]
+  password             = data.vault_generic_secret.juju-credentials.data["password"]
 }
 {% endfilter %}
