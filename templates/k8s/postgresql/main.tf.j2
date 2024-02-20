@@ -2,5 +2,4 @@ module "postgresql" {
   source = "github.com/canonical/terraform-modules.git//modules/k8s/postgresql"
 
   juju_model_name = local.juju_model_name
-  cloud_name      = local.cloud_name
 }
