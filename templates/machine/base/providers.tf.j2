@@ -35,7 +35,7 @@ data "vault_generic_secret" "juju-credentials" {
 }
 
 data "vault_generic_secret" "juju-controller-certificate" {
-  path = "secret/{{ env_region }}/juju/common/ca_certs/prodstack-is"
+  path = "secret/{{ env_region }}/juju/common/controller_ca_certs/{{ env_stage }}"
 }
 
 provider "juju" {
