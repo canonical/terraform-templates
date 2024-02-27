@@ -75,7 +75,7 @@ on:
         value: ${{ jobs.create_environment_terraform.outputs.pr_url }}
 
 env:
-  BASE_REPO: ${{ niputs.application_name == 'base-bastion' && 'base-bastion' || 'base' }}
+  BASE_REPO: ${{ inputs.application_name == 'base-bastion' && 'base-bastion' || 'base' }}
   REPO_NAME: is-${{ inputs.env_name}}
   TEMPLATE_DIR: terraform-templates/templates/${{ inputs.application_type }}
   WORKING_DIR: terraform-templates/terraform
