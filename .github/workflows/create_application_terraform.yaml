@@ -30,8 +30,12 @@ on:
         type: choice
         options:
           - 'base'
+          - 'base-bastion'
           - 'hello-kubecon'
           - 'synapse'
+          - 'wordpress'
+          - 'mysql'
+          - 'postgresql'
       application_type:
         description: 'Application type'
         default: 'k8s'
@@ -71,9 +75,10 @@ on:
         value: ${{ jobs.create_environment_terraform.outputs.pr_url }}
 
 env:
-  WORKING_DIR: terraform-templates/terraform
-  TEMPLATE_DIR: terraform-templates/templates/${{ inputs.application_type }}
+  BASE_REPO: ${{ niputs.application_name == 'base-bastion' && 'base-bastion' || 'base' }}
   REPO_NAME: is-${{ inputs.env_name}}
+  TEMPLATE_DIR: terraform-templates/templates/${{ inputs.application_type }}
+  WORKING_DIR: terraform-templates/terraform
 
 jobs:
   create_environment_terraform:
@@ -93,12 +98,25 @@ jobs:
         run: |
           mkdir ${{ env.WORKING_DIR }}
           cd ${{ env.WORKING_DIR }}
-          touch backend.tf locals.tf main.tf versions.tf variables.tf providers.tf
+          touch backend.tf locals.tf providers.tf
+          [ '${{ inputs.application_name }}' = 'base-bastion' ] && touch backend.tfvars
 
       - name: Setup backend.tf
         uses: cuchi/jinja2-action@v1.2.2
         with:
-          template: ${{ env.TEMPLATE_DIR }}/base/backend.tf.j2
+          template: ${{ env.TEMPLATE_DIR }}/${{ env.BASE_REPO }}/backend.tf.j2
+          output_file: ${{ env.WORKING_DIR }}/backend.tf
+          strict: true
+          variables: |
+            env_cloud=${{ inputs.env_cloud }}
+            env_name=${{ inputs.env_name }}
+            env_owner=${{ inputs.env_owner }}
+
+      - name: Setup backend.tfvars (base-bastion only)
+        if: ${{ inputs.application_name == 'base-bastion' }}
+        uses: cuchi/jinja2-action@v1.2.2
+        with:
+          template: ${{ env.TEMPLATE_DIR }}/${{ env.BASE_REPO }}/backend.tf.j2
           output_file: ${{ env.WORKING_DIR }}/backend.tf
           strict: true
           variables: |
@@ -107,49 +125,26 @@ jobs:
             env_owner=${{ inputs.env_owner }}
 
       - name: Setup locals.tf
+        if: ${{ inputs.application_name != 'base-bastion' }}
         uses: cuchi/jinja2-action@v1.2.2
         with:
-          template: ${{ env.TEMPLATE_DIR }}/base/locals.tf.j2
+          template: ${{ env.TEMPLATE_DIR }}/${{ env.BASE_REPO }}/locals.tf.j2
           output_file: ${{ env.WORKING_DIR }}/locals.tf
           strict: true
           variables: |
             env_name=${{ inputs.env_name }}
 
-      - name: Setup versions
-        uses: cuchi/jinja2-action@v1.2.2
-        with:
-          template: ${{ env.TEMPLATE_DIR }}/base/versions.tf.j2
-          output_file: ${{ env.WORKING_DIR }}/versions.tf
-          strict: true
-          variables: |
-            env_name=${{ inputs.env_name }}
-
-      - name: Setup variables
-        uses: cuchi/jinja2-action@v1.2.2
-        with:
-          template: ${{ env.TEMPLATE_DIR }}/base/variables.tf.j2
-          output_file: ${{ env.WORKING_DIR }}/variables.tf
-          strict: true
-          variables: |
-            env_name=${{ inputs.env_name }}
-
       - name: Setup providers
+        if: ${{ inputs.application_name != 'base-bastion' }}
         uses: cuchi/jinja2-action@v1.2.2
         with:
-          template: ${{ env.TEMPLATE_DIR }}/base/providers.tf.j2
+          template: ${{ env.TEMPLATE_DIR }}/${{ env.BASE_REPO }}/providers.tf.j2
           output_file: ${{ env.WORKING_DIR }}/providers.tf
           strict: true
           variables: |
             env_stage=${{ inputs.env_stage }}
             env_cloud=${{ inputs.env_cloud }}
             env_name=${{ inputs.env_name }}
-
-      - name: Setup application
-        uses: cuchi/jinja2-action@v1.2.2
-        with:
-          template: ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/main.tf.j2
-          output_file: ${{ env.WORKING_DIR }}/main.tf
-          strict: true
 
       - name: Set identity
         run: |
@@ -171,6 +166,7 @@ jobs:
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
           git checkout -b ${BRANCH?}
           cp -rT ../${{ env.WORKING_DIR }} terraform
+          find ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/ -type f ! -name '*.j2' -exec cp {} terraform \;
           curl -Lo ./terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz -C /tmp/ && rm -f terraform-docs.tar.gz
           chmod +x /tmp/terraform-docs
