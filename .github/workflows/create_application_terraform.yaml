@@ -166,7 +166,7 @@ jobs:
           echo "BRANCH=${BRANCH?}" >> "$GITHUB_ENV"
           git checkout -b ${BRANCH?}
           cp -rT ../${{ env.WORKING_DIR }} terraform
-          find ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/ -type f ! -name '*.j2' -exec cp {} terraform \;
+          find ../${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/ -type f ! -name '*.j2' -exec cp {} terraform \;
           curl -Lo ./terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz -C /tmp/ && rm -f terraform-docs.tar.gz
           chmod +x /tmp/terraform-docs
