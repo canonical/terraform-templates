@@ -6,13 +6,17 @@
 {% endif %}
 terraform {
   backend "s3" {
-    key                         = "environments/{{ env_owner }}/{{ env_name }}/application/state"
-    bucket                      = "{{ env_cloud }}-flux-tfstate"
+    key                         = "state"
+    bucket                      = "{{ env_name }}-tfstate"
     region                      = "{{ env_region }}"
-    endpoint                    = "radosgw.{{ env_cloud }}.canonical.com"
+    endpoints                   = {
+      s3 = "https://radosgw.{{ env_cloud }}.canonical.com"
+    }
     skip_region_validation      = true
     skip_credentials_validation = true
-    force_path_style            = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+    use_path_style              = true
   }
 }
 {% endfilter %}

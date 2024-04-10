@@ -3,7 +3,7 @@ variable "approle_role_id" {
   type        = string
   validation {
     condition     = var.approle_role_id != null
-    error_message = "No value set for approle_role_id: Set it, or export TF_VAR_APPROLE_ROLE_ID."
+    error_message = "No value set for approle_role_id: Check that TF_VAR_approle_role_id has been exported."
   }
 }
 
@@ -13,6 +13,6 @@ variable "approle_secret_id" {
   type        = string
   validation {
     condition     = var.approle_secret_id != null
-    error_message = "No value set for approle_secret_id: Set it, or export TF_VAR_APPROLE_SECRET_ID."
+    error_message = "No value set for approle_secret_id: Check that TF_VAR_LOGIN_approle_secret_id has been exported."
   }
 }
