@@ -141,6 +141,8 @@ jobs:
           template: ${{ env.TEMPLATE_DIR }}/${{ inputs.application_name }}/main.tf.j2
           output_file: ${{ env.WORKING_DIR }}/main.tf
           strict: true
+          variables: |
+            env_name=${{ inputs.env_name }}
 
       - name: Set identity
         run: |
