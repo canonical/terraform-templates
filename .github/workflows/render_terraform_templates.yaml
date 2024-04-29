@@ -167,7 +167,7 @@ jobs:
           curl -Lo ./terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz -C /tmp/ && rm -f terraform-docs.tar.gz
           chmod +x /tmp/terraform-docs
-          /tmp/terraform-docs markdown ./ --output-file ../README.md --output-mode replace
+          /tmp/terraform-docs markdown ./ --output-file README.md --output-mode replace
           git add .
           git commit -m "Add terraform project template for ${{ inputs.env_name }}"
           # git remote set-url origin https://${{ secrets.REPO_ACCESS_TOKEN }}:x-oauth-basic@github.com/canonical/${{ env.REPO_NAME }}.git
