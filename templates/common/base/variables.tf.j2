@@ -13,6 +13,6 @@ variable "approle_secret_id" {
   type        = string
   validation {
     condition     = var.approle_secret_id != null
-    error_message = "No value set for approle_secret_id: Check that TF_VAR_LOGIN_approle_secret_id has been exported."
+    error_message = "No value set for approle_secret_id: Check that TF_VAR_approle_secret_id has been exported."
   }
 }
