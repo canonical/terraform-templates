@@ -1,27 +1,12 @@
-{#- CMDB: Controller addresses should be stored in a CMDB, not here. #}
 {% filter trim %}
-{% if env_stage == "production" %}
-{%     if env_cloud == "ps5" %}
-{%         set controller = "juju-controller-34-production-ps5" %}
-{%         set controller_addresses = "juju-controller-34-production-ps5.admin.canonical.com:17070" %}
-{%     elif env_cloud == "ps6" %}
-{%         set controller = "juju-controller-34-production-ps6" %}
-{%         set controller_addresses = "juju-controller-34-production-ps6.admin.canonical.com:17070" %}
-{%     endif %}
-{% elif env_stage == "staging" %}
-{%     if env_cloud == "ps5" %}
-{%         set controller = "juju-controller-34-staging-ps5" %}
-{%         set controller_addresses = "juju-controller-34-staging-ps5.admin.canonical.com:17070" %}
-{%     elif env_cloud == "ps6" %}
-{%         set controller = "juju-controller-34-staging-ps6" %}
-{%         set controller_addresses = "juju-controller-34-staging-ps6.admin.canonical.com:17070" %}
-{%     endif %}
-{% endif %}
 {% if env_cloud == "ps5" %}
-{%     set env_region = "prodstack5" %}
+    {%- set env_region = "prodstack5" %}
 {% elif env_cloud == "ps6" %}
-{%     set env_region = "prodstack6" %}
+    {%- set env_region = "prodstack6" %}
 {% endif %}
+{% set controller_name = "juju-controller-35-" + env_stage + "-" + env_cloud %}
+{% set controller_addresses = controller + ".dynamic.admin.canonical.com:17070" %}
+
 provider "vault" {
   address = "https://vault.admin.canonical.com:8200"
   auth_login {
