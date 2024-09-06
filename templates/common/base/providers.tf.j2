@@ -24,7 +24,7 @@ data "vault_generic_secret" "juju_credentials" {
 }
 
 data "vault_generic_secret" "juju_controller_certificate" {
-  path = "secret/{{ env_region }}/juju/common/ca_certs/{{ controller }}"
+  path = "secret/{{ env_region }}/juju/common/ca_certs/{{ controller_name }}"
 }
 
 provider "juju" {
