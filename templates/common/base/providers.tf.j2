@@ -2,7 +2,7 @@
 {% if env_cloud == "ps5" %}
     {%- set env_region = "prodstack5" %}
 {% elif env_cloud == "ps6" %}
-    {%- set env_region = "prodstack6" %}
+    {%- swwet env_region = "prodstack6" %}
 {% endif %}
 {% set controller_name = "juju-controller-35-" + env_stage + "-" + env_cloud %}
 {% set controller_addresses = controller_name + ".dynamic.admin.canonical.com:17070" %}
