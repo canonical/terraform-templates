@@ -1,7 +1,0 @@
-locals {
-  juju_model_name = "{{ env_name }}"
-}
-
-data "juju_model" "service_model" {
-  name = local.juju_model_name
-}
