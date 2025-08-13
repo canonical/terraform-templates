@@ -44,7 +44,7 @@ jobs:
           touch backend.tf main.tf versions.tf variables.tf providers.tf
 
       - name: Setup README.md
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/readme.tf.j2
           output_file: ${{ env.WORKING_DIR }}/README.md
@@ -53,7 +53,7 @@ jobs:
             service_name=${{ inputs.service_name }}
 
       - name: Setup backend.tf
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/backend.tf.j2
           output_file: ${{ env.WORKING_DIR }}/backend.tf
@@ -62,7 +62,7 @@ jobs:
             service_name=${{ inputs.service_name }}
 
       - name: Setup versions
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/versions.tf.j2
           output_file: ${{ env.WORKING_DIR }}/versions.tf
@@ -71,7 +71,7 @@ jobs:
             service_name=${{ inputs.service_name }}
 
       - name: Setup variables
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/variables.tf.j2
           output_file: ${{ env.WORKING_DIR }}/variables.tf
@@ -80,7 +80,7 @@ jobs:
             service_name=${{ inputs.service_name }}
 
       - name: Setup providers
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/providers.tf.j2
           output_file: ${{ env.WORKING_DIR }}/providers.tf
@@ -89,7 +89,7 @@ jobs:
             service_name=${{ inputs.service_name }}
 
       - name: Setup application
-        uses: cuchi/jinja2-action@v1.2.2
+        uses: cuchi/jinja2-action@v1.3.0
         with:
           template: ${{ env.TEMPLATE_DIR }}/main.tf.j2
           output_file: ${{ env.WORKING_DIR }}/main.tf
