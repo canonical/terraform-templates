@@ -1,7 +1,0 @@
-module "postgresql" {
-  source = "git::ssh://git.launchpad.net/canonical-terraform-modules//juju/applications/is-managed-postgresql?depth=1&ref=v3.2"
-
-  juju_model_name               = local.juju_model_name
-  cloud_name                    = {{ env_cloud }}
-  postgresql_database_names     = [local.juju_model_name]
-}
