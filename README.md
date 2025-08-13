@@ -1,5 +1,12 @@
 # terraform-templates
 
+## Obsolete templates pushed to `legacy` branch 2025-08-13.
+
+This branch will be removed 2026-01-01.
+
+---
+
+
 The templates available are used to automatically create Terraform Projects for
 services.
 
