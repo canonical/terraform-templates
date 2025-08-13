@@ -31,7 +31,7 @@ jobs:
       pr_url: ${{ steps.create_pull_request.outputs.pr_url }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: canonical/terraform-templates
           path: terraform-templates
@@ -103,7 +103,7 @@ jobs:
           git config --global user.name "Canonical IS Bot"
 
       - name: Checkout env repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: canonical/${{env.REPO_NAME}}
           path: remote-repo
